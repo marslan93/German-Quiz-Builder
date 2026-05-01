@@ -1,5 +1,7 @@
 import { Level } from "@/data/vocabulary";
 import { useFavorites, useMistakes } from "@/hooks/useStorage";
+import DtzLogo from "@/components/DtzLogo";
+import Footer from "@/components/Footer";
 
 interface Props {
   onSelect: (level: Level) => void;
@@ -7,7 +9,15 @@ interface Props {
   onMistakes: () => void;
 }
 
-const levels: { id: Level; emoji: string; label: string; desc: string; color: string; bg: string; border: string }[] = [
+const levels: {
+  id: Level;
+  emoji: string;
+  label: string;
+  desc: string;
+  color: string;
+  bg: string;
+  border: string;
+}[] = [
   {
     id: "A1",
     emoji: "🌱",
@@ -42,12 +52,21 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
   const { mistakes } = useMistakes();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center px-4 py-8">
+      <div className="w-full max-w-md flex flex-col flex-1">
+
+        {/* Logo + Title */}
         <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🇩🇪</div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Almanca Quiz</h1>
-          <p className="text-gray-500 text-base">Seviyeni seç ve öğrenmeye başla!</p>
+          <div className="flex justify-center mb-4">
+            <DtzLogo size={88} />
+          </div>
+          <h1 className="text-2xl font-extrabold text-gray-900 mb-1 leading-tight">
+            Deutsch Wortschatz Trainer A1–B1
+            <span className="ml-2 text-indigo-600">(DTZ)</span>
+          </h1>
+          <p className="text-gray-500 text-sm font-medium">
+            Learn German vocabulary for DTZ and B1 exams
+          </p>
         </div>
 
         {/* Level buttons */}
@@ -70,9 +89,9 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
         </div>
 
         {/* Divider */}
-        <div className="flex items-center gap-3 my-5">
+        <div className="flex items-center gap-3 my-4">
           <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs text-gray-400 font-medium">KİŞİSEL ÇALIŞMA</span>
+          <span className="text-xs text-gray-400 font-medium tracking-wider">KİŞİSEL ÇALIŞMA</span>
           <div className="flex-1 h-px bg-gray-200" />
         </div>
 
@@ -101,7 +120,12 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
           </button>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">Her soru için 4 şık • 10 soruluk quiz</p>
+        <p className="text-center text-xs text-gray-400 mt-5">
+          Her soru için 4 şık • 10 soruluk quiz
+        </p>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

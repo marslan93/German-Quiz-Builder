@@ -62,6 +62,8 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
   const [bestStreak, setBestStreak] = useState(0);
   const [starred, setStarred] = useState(false);
   const [tooFew, setTooFew] = useState(false);
+  const [flashKey, setFlashKey] = useState(0);
+  const [flashType, setFlashType] = useState<"correct" | "wrong" | null>(null);
 
   const initQuiz = useCallback(() => {
     const pool = customPool ?? vocabulary.filter((v) => v.level === level);
@@ -101,11 +103,18 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
     setStarred((s) => !s);
   };
 
+  const triggerFlash = (type: "correct" | "wrong") => {
+    setFlashType(type);
+    setFlashKey((k) => k + 1);
+    setTimeout(() => setFlashType(null), 600);
+  };
+
   const handleSelect = (option: string) => {
     if (answerState !== "idle") return;
     setSelected(option);
     const isCorrect = option === current.correct;
     if (isCorrect) {
+      triggerFlash("correct");
       setScore((s) => s + 1);
       setStreak((s) => {
         const next = s + 1;
@@ -114,6 +123,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
       });
       setAnswerState("correct");
     } else {
+      triggerFlash("wrong");
       setStreak(0);
       setAnswerState("wrong");
       addMistake(current.item.german);
@@ -262,7 +272,23 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col px-4 py-6 relative">
+
+      {/* Full-screen flash overlay */}
+      {flashType && (
+        <div
+          key={flashKey}
+          className={`fixed inset-0 pointer-events-none z-50 ${
+            flashType === "correct" ? "quiz-flash-correct" : "quiz-flash-wrong"
+          }`}
+          style={{
+            backgroundColor: flashType === "correct"
+              ? "rgba(52, 211, 153, 0.28)"
+              : "rgba(251, 113, 133, 0.28)",
+          }}
+        />
+      )}
+
       <div className="w-full max-w-md mx-auto flex flex-col flex-1">
 
         {/* Header */}

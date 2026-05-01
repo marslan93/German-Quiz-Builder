@@ -148,3 +148,23 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+@keyframes flash-correct {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes flash-wrong {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.quiz-flash-correct {
+  animation: flash-correct 0.55s ease-out forwards;
+}
+
+.quiz-flash-wrong {
+  animation: flash-wrong 0.55s ease-out forwards;
+}
