@@ -151,20 +151,22 @@
 
 @keyframes flash-correct {
   0%   { opacity: 0; }
-  15%  { opacity: 1; }
+  20%  { opacity: 1; }
+  70%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
 @keyframes flash-wrong {
   0%   { opacity: 0; }
-  15%  { opacity: 1; }
+  20%  { opacity: 1; }
+  70%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
 .quiz-flash-correct {
-  animation: flash-correct 0.55s ease-out forwards;
+  animation: flash-correct 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .quiz-flash-wrong {
-  animation: flash-wrong 0.55s ease-out forwards;
+  animation: flash-wrong 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }

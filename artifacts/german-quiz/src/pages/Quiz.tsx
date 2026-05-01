@@ -106,7 +106,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
   const triggerFlash = (type: "correct" | "wrong") => {
     setFlashType(type);
     setFlashKey((k) => k + 1);
-    setTimeout(() => setFlashType(null), 600);
+    setTimeout(() => setFlashType(null), 1050);
   };
 
   const handleSelect = (option: string) => {

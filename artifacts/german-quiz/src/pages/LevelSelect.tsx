@@ -58,13 +58,15 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
         {/* Logo + Title */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <DtzLogo size={88} />
+            <DtzLogo size={80} />
           </div>
-          <h1 className="text-2xl font-extrabold text-gray-900 mb-1 leading-tight">
-            Deutsch Wortschatz Trainer A1–B1
-            <span className="ml-2 text-indigo-600">(DTZ)</span>
+          <h1 className="text-[1.6rem] font-extrabold text-gray-900 leading-tight tracking-tight">
+            Deutsch Wortschatz Trainer
           </h1>
-          <p className="text-gray-500 text-sm font-medium">
+          <p className="text-sm font-semibold text-indigo-400 mt-1 tracking-widest uppercase">
+            A1–B1 &bull; DTZ
+          </p>
+          <p className="text-gray-400 text-xs mt-2">
             Learn German vocabulary for DTZ and B1 exams
           </p>
         </div>
