@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { vocabulary, VocabItem, Level } from "@/data/vocabulary";
+import { useFavorites, useMistakes } from "@/hooks/useStorage";
 
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
@@ -7,7 +8,14 @@ function shuffle<T>(arr: T[]): T[] {
 
 function getWrongOptions(correct: VocabItem, pool: VocabItem[]): string[] {
   const others = pool.filter((v) => v.turkish !== correct.turkish);
-  return shuffle(others).slice(0, 3).map((v) => v.turkish);
+  const picked = shuffle(others).slice(0, 3).map((v) => v.turkish);
+  if (picked.length < 3) {
+    const fallback = shuffle(vocabulary.filter((v) => v.turkish !== correct.turkish))
+      .slice(0, 3 - picked.length)
+      .map((v) => v.turkish);
+    return [...new Set([...picked, ...fallback])].slice(0, 3);
+  }
+  return picked;
 }
 
 interface Question {
@@ -32,12 +40,18 @@ const LEVEL_META: Record<Level, { emoji: string; label: string; color: string }>
   B1: { emoji: "🌳", label: "B1 – Orta", color: "text-purple-600" },
 };
 
-interface Props {
-  level: Level;
+export interface QuizProps {
+  level?: Level;
+  customPool?: VocabItem[];
+  quizTitle?: string;
+  quizEmoji?: string;
   onBack: () => void;
 }
 
-export default function Quiz({ level, onBack }: Props) {
+export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }: QuizProps) {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const { addMistake } = useMistakes();
+
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -46,10 +60,17 @@ export default function Quiz({ level, onBack }: Props) {
   const [finished, setFinished] = useState(false);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+  const [starred, setStarred] = useState(false);
+  const [tooFew, setTooFew] = useState(false);
 
   const initQuiz = useCallback(() => {
-    const pool = vocabulary.filter((v) => v.level === level);
-    const shuffled = shuffle(pool).slice(0, TOTAL_QUESTIONS);
+    const pool = customPool ?? vocabulary.filter((v) => v.level === level);
+    if (pool.length < 4) {
+      setTooFew(true);
+      return;
+    }
+    const count = Math.min(TOTAL_QUESTIONS, pool.length);
+    const shuffled = shuffle(pool).slice(0, count);
     const qs = shuffled.map((item) => buildQuestion(item, pool));
     setQuestions(qs);
     setCurrentIndex(0);
@@ -59,13 +80,26 @@ export default function Quiz({ level, onBack }: Props) {
     setFinished(false);
     setStreak(0);
     setBestStreak(0);
-  }, [level]);
+    setTooFew(false);
+  }, [level, customPool]);
 
   useEffect(() => {
     initQuiz();
   }, [initQuiz]);
 
+  useEffect(() => {
+    if (questions[currentIndex]) {
+      setStarred(isFavorite(questions[currentIndex].item.german));
+    }
+  }, [currentIndex, questions, isFavorite]);
+
   const current = questions[currentIndex];
+
+  const handleStar = () => {
+    if (!current) return;
+    toggleFavorite(current.item.german);
+    setStarred((s) => !s);
+  };
 
   const handleSelect = (option: string) => {
     if (answerState !== "idle") return;
@@ -82,11 +116,13 @@ export default function Quiz({ level, onBack }: Props) {
     } else {
       setStreak(0);
       setAnswerState("wrong");
+      addMistake(current.item.german);
     }
   };
 
   const handleNext = () => {
-    if (currentIndex + 1 >= TOTAL_QUESTIONS) {
+    const totalQ = questions.length;
+    if (currentIndex + 1 >= totalQ) {
       setFinished(true);
     } else {
       setCurrentIndex((i) => i + 1);
@@ -117,22 +153,47 @@ export default function Quiz({ level, onBack }: Props) {
     return base + "border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed";
   };
 
-  const progress = questions.length > 0 ? (currentIndex / TOTAL_QUESTIONS) * 100 : 0;
-  const meta = LEVEL_META[level];
+  const totalQ = questions.length;
+  const progress = totalQ > 0 ? (currentIndex / totalQ) * 100 : 0;
+  const meta = level ? LEVEL_META[level] : null;
+  const displayTitle = quizTitle ?? (meta ? `${meta.emoji} ${meta.label}` : "Quiz");
+  const displayEmoji = quizEmoji ?? (meta?.emoji ?? "📝");
 
   const getScoreEmoji = () => {
-    if (score >= 9) return "🏆";
-    if (score >= 7) return "🌟";
-    if (score >= 5) return "👍";
+    const pct = score / totalQ;
+    if (pct >= 0.9) return "🏆";
+    if (pct >= 0.7) return "🌟";
+    if (pct >= 0.5) return "👍";
     return "📚";
   };
 
   const getScoreMessage = () => {
-    if (score >= 9) return "Mükemmel! Harika bir performans!";
-    if (score >= 7) return "Çok iyi! Devam et!";
-    if (score >= 5) return "İyi gidiyorsun!";
+    const pct = score / totalQ;
+    if (pct >= 0.9) return "Mükemmel! Harika bir performans!";
+    if (pct >= 0.7) return "Çok iyi! Devam et!";
+    if (pct >= 0.5) return "İyi gidiyorsun!";
     return "Daha fazla pratik yapabilirsin!";
   };
+
+  if (tooFew) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 text-center">
+          <div className="text-6xl mb-4">😕</div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Yeterli Kelime Yok</h2>
+          <p className="text-gray-500 mb-6">
+            Quiz başlatmak için en az 4 kelimeye ihtiyaç var. Önce kelime ekleyin.
+          </p>
+          <button
+            onClick={onBack}
+            className="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-lg hover:shadow-xl transition-all"
+          >
+            Geri Dön
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (questions.length === 0) {
     return (
@@ -148,8 +209,8 @@ export default function Quiz({ level, onBack }: Props) {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
             <div className="text-7xl mb-4">{getScoreEmoji()}</div>
-            <div className={`inline-block text-sm font-semibold px-3 py-1 rounded-full bg-indigo-50 mb-3 ${meta.color}`}>
-              {meta.emoji} {meta.label}
+            <div className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-indigo-50 mb-3 text-indigo-600">
+              {displayTitle}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Bitti!</h2>
             <p className="text-gray-500 mb-6">{getScoreMessage()}</p>
@@ -157,7 +218,7 @@ export default function Quiz({ level, onBack }: Props) {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-indigo-50 rounded-2xl p-4">
                 <p className="text-3xl font-bold text-indigo-600">
-                  {score}/{TOTAL_QUESTIONS}
+                  {score}/{totalQ}
                 </p>
                 <p className="text-sm text-indigo-400 mt-1">Skor</p>
               </div>
@@ -170,12 +231,12 @@ export default function Quiz({ level, onBack }: Props) {
             <div className="mb-8">
               <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Başarı Oranı</span>
-                <span>{Math.round((score / TOTAL_QUESTIONS) * 100)}%</span>
+                <span>{Math.round((score / totalQ) * 100)}%</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-3">
                 <div
                   className="h-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700"
-                  style={{ width: `${(score / TOTAL_QUESTIONS) * 100}%` }}
+                  style={{ width: `${(score / totalQ) * 100}%` }}
                 />
               </div>
             </div>
@@ -191,7 +252,7 @@ export default function Quiz({ level, onBack }: Props) {
                 onClick={onBack}
                 className="w-full py-3 rounded-2xl border-2 border-gray-200 text-gray-600 font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 active:scale-95"
               >
-                Seviye Seç
+                ← Geri Dön
               </button>
             </div>
           </div>
@@ -210,10 +271,10 @@ export default function Quiz({ level, onBack }: Props) {
             onClick={onBack}
             className="flex items-center gap-1.5 text-gray-400 hover:text-gray-600 transition-colors text-sm font-medium"
           >
-            ← Seviyeler
+            ← Geri
           </button>
-          <div className={`text-sm font-semibold ${meta.color}`}>
-            {meta.emoji} {level}
+          <div className="text-sm font-semibold text-indigo-600">
+            {displayEmoji} {level ?? ""}
           </div>
           <div className="flex items-center gap-2">
             {streak >= 2 && (
@@ -222,7 +283,7 @@ export default function Quiz({ level, onBack }: Props) {
               </div>
             )}
             <div className="bg-white rounded-full px-3 py-1 shadow-sm text-sm font-semibold text-gray-600">
-              {score} <span className="text-gray-300">/</span> {TOTAL_QUESTIONS}
+              {score} <span className="text-gray-300">/</span> {totalQ}
             </div>
           </div>
         </div>
@@ -230,7 +291,7 @@ export default function Quiz({ level, onBack }: Props) {
         {/* Progress */}
         <div className="mb-5">
           <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-            <span>Soru {currentIndex + 1} / {TOTAL_QUESTIONS}</span>
+            <span>Soru {currentIndex + 1} / {totalQ}</span>
             <span>{current.item.category}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -242,7 +303,18 @@ export default function Quiz({ level, onBack }: Props) {
         </div>
 
         {/* Word card */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-5 text-center flex-shrink-0">
+        <div className="bg-white rounded-3xl shadow-lg p-8 mb-5 text-center flex-shrink-0 relative">
+          {/* Star button */}
+          <button
+            onClick={handleStar}
+            title={starred ? "Favorilerden çıkar" : "Favorilere ekle"}
+            className={`absolute top-4 right-4 text-2xl transition-all duration-200 active:scale-110 ${
+              starred ? "text-yellow-400" : "text-gray-200 hover:text-yellow-300"
+            }`}
+          >
+            ★
+          </button>
+
           <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">Almanca</p>
           <h1 className="text-5xl font-bold text-gray-900 tracking-tight leading-tight break-words">
             {current.item.german}
@@ -305,7 +377,7 @@ export default function Quiz({ level, onBack }: Props) {
               onClick={handleNext}
               className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
             >
-              {currentIndex + 1 >= TOTAL_QUESTIONS ? "Sonuçları Gör →" : "Sonraki Soru →"}
+              {currentIndex + 1 >= totalQ ? "Sonuçları Gör →" : "Sonraki Soru →"}
             </button>
           </div>
         )}

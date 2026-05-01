@@ -1,7 +1,10 @@
 import { Level } from "@/data/vocabulary";
+import { useFavorites, useMistakes } from "@/hooks/useStorage";
 
 interface Props {
   onSelect: (level: Level) => void;
+  onFavorites: () => void;
+  onMistakes: () => void;
 }
 
 const levels: { id: Level; emoji: string; label: string; desc: string; color: string; bg: string; border: string }[] = [
@@ -34,17 +37,21 @@ const levels: { id: Level; emoji: string; label: string; desc: string; color: st
   },
 ];
 
-export default function LevelSelect({ onSelect }: Props) {
+export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props) {
+  const { favorites } = useFavorites();
+  const { mistakes } = useMistakes();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <div className="text-6xl mb-4">🇩🇪</div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Almanca Quiz</h1>
           <p className="text-gray-500 text-base">Seviyeni seç ve öğrenmeye başla!</p>
         </div>
 
-        <div className="flex flex-col gap-4">
+        {/* Level buttons */}
+        <div className="flex flex-col gap-4 mb-5">
           {levels.map((lv) => (
             <button
               key={lv.id}
@@ -62,7 +69,39 @@ export default function LevelSelect({ onSelect }: Props) {
           ))}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-8">Her soru için 4 şık • 10 soruluk quiz</p>
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-gray-200" />
+          <span className="text-xs text-gray-400 font-medium">KİŞİSEL ÇALIŞMA</span>
+          <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        {/* Favorites + Mistakes */}
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={onFavorites}
+            className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 active:scale-95 shadow-sm"
+          >
+            <span className="text-2xl">⭐</span>
+            <span className="text-sm font-bold text-amber-700">Favorilerim</span>
+            <span className="text-xs text-amber-500 font-medium">
+              {favorites.length} kelime
+            </span>
+          </button>
+
+          <button
+            onClick={onMistakes}
+            className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border-2 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:border-rose-400 transition-all duration-200 active:scale-95 shadow-sm"
+          >
+            <span className="text-2xl">❌</span>
+            <span className="text-sm font-bold text-rose-700">Hatalarım</span>
+            <span className="text-xs text-rose-500 font-medium">
+              {mistakes.length} kelime
+            </span>
+          </button>
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-6">Her soru için 4 şık • 10 soruluk quiz</p>
       </div>
     </div>
   );
