@@ -1,6 +1,6 @@
 # 🇩🇪 Deutsch Wortschatz Trainer (A1–B1 | DTZ)
 
-A simple German vocabulary trainer for learners preparing for DTZ and Goethe A1–B1 exams.
+An interactive German vocabulary trainer designed for learners preparing for DTZ and Goethe A1–B1 exams.
 
 ## 🔗 Demo
 https://replit.com/@marslan93/German-Quiz-Builder
