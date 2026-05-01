@@ -1,31 +1,24 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import LevelSelect from "@/pages/LevelSelect";
 import Quiz from "@/pages/Quiz";
+import { Level } from "@/data/vocabulary";
 
 const queryClient = new QueryClient();
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={Quiz} />
-      <Route path="*">
-        <div className="min-h-screen flex items-center justify-center text-gray-500">
-          Sayfa bulunamadı
-        </div>
-      </Route>
-    </Switch>
-  );
-}
-
 function App() {
+  const [level, setLevel] = useState<Level | null>(null);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
+        {level === null ? (
+          <LevelSelect onSelect={setLevel} />
+        ) : (
+          <Quiz level={level} onBack={() => setLevel(null)} />
+        )}
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>

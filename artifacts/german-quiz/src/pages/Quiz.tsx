@@ -1,15 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
-import { vocabulary, VocabItem } from "@/data/vocabulary";
+import { vocabulary, VocabItem, Level } from "@/data/vocabulary";
 
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-function getWrongOptions(correct: VocabItem, all: VocabItem[]): string[] {
-  const pool = all.filter((v) => v.turkish !== correct.turkish);
-  return shuffle(pool)
-    .slice(0, 3)
-    .map((v) => v.turkish);
+function getWrongOptions(correct: VocabItem, pool: VocabItem[]): string[] {
+  const others = pool.filter((v) => v.turkish !== correct.turkish);
+  return shuffle(others).slice(0, 3).map((v) => v.turkish);
 }
 
 interface Question {
@@ -18,8 +16,8 @@ interface Question {
   correct: string;
 }
 
-function buildQuestion(item: VocabItem, all: VocabItem[]): Question {
-  const wrong = getWrongOptions(item, all);
+function buildQuestion(item: VocabItem, pool: VocabItem[]): Question {
+  const wrong = getWrongOptions(item, pool);
   const options = shuffle([item.turkish, ...wrong]);
   return { item, options, correct: item.turkish };
 }
@@ -28,7 +26,18 @@ type AnswerState = "idle" | "correct" | "wrong";
 
 const TOTAL_QUESTIONS = 10;
 
-export default function Quiz() {
+const LEVEL_META: Record<Level, { emoji: string; label: string; color: string }> = {
+  A1: { emoji: "🌱", label: "A1 – Başlangıç", color: "text-emerald-600" },
+  A2: { emoji: "🌿", label: "A2 – Temel", color: "text-blue-600" },
+  B1: { emoji: "🌳", label: "B1 – Orta", color: "text-purple-600" },
+};
+
+interface Props {
+  level: Level;
+  onBack: () => void;
+}
+
+export default function Quiz({ level, onBack }: Props) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -39,8 +48,9 @@ export default function Quiz() {
   const [bestStreak, setBestStreak] = useState(0);
 
   const initQuiz = useCallback(() => {
-    const shuffled = shuffle(vocabulary).slice(0, TOTAL_QUESTIONS);
-    const qs = shuffled.map((item) => buildQuestion(item, vocabulary));
+    const pool = vocabulary.filter((v) => v.level === level);
+    const shuffled = shuffle(pool).slice(0, TOTAL_QUESTIONS);
+    const qs = shuffled.map((item) => buildQuestion(item, pool));
     setQuestions(qs);
     setCurrentIndex(0);
     setScore(0);
@@ -49,7 +59,7 @@ export default function Quiz() {
     setFinished(false);
     setStreak(0);
     setBestStreak(0);
-  }, []);
+  }, [level]);
 
   useEffect(() => {
     initQuiz();
@@ -64,9 +74,9 @@ export default function Quiz() {
     if (isCorrect) {
       setScore((s) => s + 1);
       setStreak((s) => {
-        const newStreak = s + 1;
-        setBestStreak((b) => Math.max(b, newStreak));
-        return newStreak;
+        const next = s + 1;
+        setBestStreak((b) => Math.max(b, next));
+        return next;
       });
       setAnswerState("correct");
     } else {
@@ -90,7 +100,10 @@ export default function Quiz() {
       "w-full text-left px-5 py-4 rounded-2xl border-2 text-base font-medium transition-all duration-200 focus:outline-none select-none ";
 
     if (answerState === "idle") {
-      return base + "border-indigo-100 bg-white text-gray-800 hover:border-indigo-400 hover:bg-indigo-50 active:scale-95 cursor-pointer shadow-sm";
+      return (
+        base +
+        "border-indigo-100 bg-white text-gray-800 hover:border-indigo-400 hover:bg-indigo-50 active:scale-95 cursor-pointer shadow-sm"
+      );
     }
 
     if (option === current.correct) {
@@ -104,7 +117,8 @@ export default function Quiz() {
     return base + "border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed";
   };
 
-  const progress = questions.length > 0 ? ((currentIndex) / TOTAL_QUESTIONS) * 100 : 0;
+  const progress = questions.length > 0 ? (currentIndex / TOTAL_QUESTIONS) * 100 : 0;
+  const meta = LEVEL_META[level];
 
   const getScoreEmoji = () => {
     if (score >= 9) return "🏆";
@@ -134,12 +148,17 @@ export default function Quiz() {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-3xl shadow-xl p-8 text-center">
             <div className="text-7xl mb-4">{getScoreEmoji()}</div>
+            <div className={`inline-block text-sm font-semibold px-3 py-1 rounded-full bg-indigo-50 mb-3 ${meta.color}`}>
+              {meta.emoji} {meta.label}
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Bitti!</h2>
             <p className="text-gray-500 mb-6">{getScoreMessage()}</p>
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-indigo-50 rounded-2xl p-4">
-                <p className="text-3xl font-bold text-indigo-600">{score}/{TOTAL_QUESTIONS}</p>
+                <p className="text-3xl font-bold text-indigo-600">
+                  {score}/{TOTAL_QUESTIONS}
+                </p>
                 <p className="text-sm text-indigo-400 mt-1">Skor</p>
               </div>
               <div className="bg-amber-50 rounded-2xl p-4">
@@ -148,7 +167,7 @@ export default function Quiz() {
               </div>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-8">
               <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Başarı Oranı</span>
                 <span>{Math.round((score / TOTAL_QUESTIONS) * 100)}%</span>
@@ -161,12 +180,20 @@ export default function Quiz() {
               </div>
             </div>
 
-            <button
-              onClick={initQuiz}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
-            >
-              Tekrar Oyna
-            </button>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={initQuiz}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
+              >
+                Tekrar Oyna
+              </button>
+              <button
+                onClick={onBack}
+                className="w-full py-3 rounded-2xl border-2 border-gray-200 text-gray-600 font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 active:scale-95"
+              >
+                Seviye Seç
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -177,15 +204,20 @@ export default function Quiz() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col px-4 py-6">
       <div className="w-full max-w-md mx-auto flex flex-col flex-1">
 
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              🇩🇪 Quiz
-            </span>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-gray-400 hover:text-gray-600 transition-colors text-sm font-medium"
+          >
+            ← Seviyeler
+          </button>
+          <div className={`text-sm font-semibold ${meta.color}`}>
+            {meta.emoji} {level}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {streak >= 2 && (
-              <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
+              <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-sm font-semibold">
                 🔥 {streak}
               </div>
             )}
@@ -195,9 +227,10 @@ export default function Quiz() {
           </div>
         </div>
 
-        <div className="mb-6">
+        {/* Progress */}
+        <div className="mb-5">
           <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-            <span>Soru {currentIndex + 1}/{TOTAL_QUESTIONS}</span>
+            <span>Soru {currentIndex + 1} / {TOTAL_QUESTIONS}</span>
             <span>{current.item.category}</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -208,7 +241,8 @@ export default function Quiz() {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-6 text-center flex-shrink-0">
+        {/* Word card */}
+        <div className="bg-white rounded-3xl shadow-lg p-8 mb-5 text-center flex-shrink-0">
           <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">Almanca</p>
           <h1 className="text-5xl font-bold text-gray-900 tracking-tight leading-tight break-words">
             {current.item.german}
@@ -216,7 +250,8 @@ export default function Quiz() {
           <p className="text-sm text-gray-400 mt-3">Türkçe karşılığı nedir?</p>
         </div>
 
-        <div className="flex flex-col gap-3 mb-6">
+        {/* Options */}
+        <div className="flex flex-col gap-3 mb-4">
           {current.options.map((option) => (
             <button
               key={option}
@@ -225,10 +260,10 @@ export default function Quiz() {
             >
               <span className="flex items-center gap-3">
                 {answerState !== "idle" && option === current.correct && (
-                  <span className="text-emerald-500 font-bold text-lg">✓</span>
+                  <span className="text-emerald-500 font-bold text-lg leading-none">✓</span>
                 )}
                 {answerState === "wrong" && option === selected && option !== current.correct && (
-                  <span className="text-rose-500 font-bold text-lg">✗</span>
+                  <span className="text-rose-500 font-bold text-lg leading-none">✗</span>
                 )}
                 {option}
               </span>
@@ -236,20 +271,41 @@ export default function Quiz() {
           ))}
         </div>
 
+        {/* Feedback + example sentence + next button */}
         {answerState !== "idle" && (
-          <div className="mt-auto">
-            <div className={`rounded-2xl p-4 mb-4 text-center font-semibold ${answerState === "correct" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>
+          <div className="mt-auto flex flex-col gap-3">
+            {/* Result banner */}
+            <div
+              className={`rounded-2xl px-5 py-3 text-center font-semibold text-sm ${
+                answerState === "correct"
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-rose-100 text-rose-700"
+              }`}
+            >
               {answerState === "correct"
                 ? streak >= 3
-                  ? `🔥 ${streak} seri! Harika!`
-                  : "Doğru! Tebrikler!"
-                : `Yanlış. Doğru cevap: ${current.correct}`}
+                  ? `🔥 ${streak} seri! Harika gidiyorsun!`
+                  : "✓ Doğru! Tebrikler!"
+                : `✗ Yanlış. Doğru cevap: ${current.correct}`}
             </div>
+
+            {/* Example sentence */}
+            <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 px-5 py-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-2">Örnek Cümle</p>
+              <p className="text-gray-800 font-medium text-sm leading-relaxed">
+                🇩🇪 {current.item.exampleDe}
+              </p>
+              <p className="text-gray-500 text-sm leading-relaxed mt-1">
+                🇹🇷 {current.item.exampleTr}
+              </p>
+            </div>
+
+            {/* Next button */}
             <button
               onClick={handleNext}
               className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
             >
-              {currentIndex + 1 >= TOTAL_QUESTIONS ? "Sonuçları Gör" : "Sonraki Soru →"}
+              {currentIndex + 1 >= TOTAL_QUESTIONS ? "Sonuçları Gör →" : "Sonraki Soru →"}
             </button>
           </div>
         )}
