@@ -1,35 +1,36 @@
-German Quiz Builder
+# German Quiz Builder
 
 German Quiz Builder is a modern vocabulary learning and quiz application designed for German learners.
 
 The project helps users practice German vocabulary through interactive quizzes, level-based word lists, favorites, mistake tracking, and personal notes.
 
-Features
+## Features
 
-* German vocabulary practice from A1 to B2
-* Interactive multiple-choice quiz system
-* Turkish meanings for German words
-* Favorite words list
-* Mistake tracking for repeated practice
-* Personal notes for custom example sentences
-* Question series options
-* Mobile-friendly responsive design
-* Clean and modern user interface
-* Built with React and TypeScript
+- German vocabulary practice from A1 to B2
+- Interactive multiple-choice quiz system
+- Turkish meanings for German words
+- Favorite words list
+- Mistake tracking for repeated practice
+- Personal notes for custom example sentences
+- Question series options
+- Mobile-friendly responsive design
+- Clean and modern user interface
+- Built with React and TypeScript
 
-Tech Stack
+## Tech Stack
 
-* React
-* TypeScript
-* Vite
-* Tailwind CSS
-* shadcn/ui
-* React Router
-* LocalStorage
-* pnpm
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+- React Router
+- LocalStorage
+- pnpm
 
-Project Structure
+## Project Structure
 
+```text
 German-Quiz-Builder/
 ├── artifacts/
 │   └── german-quiz/
