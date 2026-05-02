@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { Level } from "@/data/vocabulary";
 import { useFavorites, useMistakes } from "@/hooks/useStorage";
 import DtzLogo from "@/components/DtzLogo";
 import Footer from "@/components/Footer";
 
 interface Props {
-  onSelect: (level: Level) => void;
+  onSelectQuiz: (level: Level, quizLength: number) => void;
   onFavorites: () => void;
   onMistakes: () => void;
+  onNotes: () => void;
 }
 
 const levels: {
@@ -56,83 +58,122 @@ const levels: {
   },
 ];
 
-export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props) {
+const QUIZ_LENGTHS = [5, 10, 15];
+
+export default function LevelSelect({ onSelectQuiz, onFavorites, onMistakes, onNotes }: Props) {
+  const [quizLength, setQuizLength] = useState(10);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { favorites } = useFavorites();
   const { mistakes } = useMistakes();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col items-center px-4 py-7">
       <div className="w-full max-w-md flex flex-col flex-1">
 
         {/* Logo + Title */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <DtzLogo size={80} />
+        <div className="text-center mb-6">
+          <div className="flex justify-center mb-3">
+            <DtzLogo size={72} />
           </div>
-          <h1 className="text-[1.6rem] font-extrabold text-gray-900 leading-tight tracking-tight">
+          <h1 className="text-[1.55rem] font-extrabold text-gray-900 leading-tight tracking-tight">
             Deutsch Wortschatz Trainer
           </h1>
-          <p className="text-sm font-semibold text-indigo-400 mt-1 tracking-widest uppercase">
+          <p className="text-xs font-bold text-indigo-400 mt-1 tracking-widest uppercase">
             A1–B2 &bull; DTZ
-          </p>
-          <p className="text-gray-400 text-xs mt-2">
-            Learn German vocabulary for DTZ and B1/B2 exams
           </p>
         </div>
 
-        {/* Level buttons */}
-        <div className="flex flex-col gap-4 mb-5">
+        {/* Level cards */}
+        <div className="flex flex-col gap-3 mb-4">
           {levels.map((lv) => (
             <button
               key={lv.id}
-              onClick={() => onSelect(lv.id)}
-              className={`w-full text-left px-6 py-5 rounded-2xl border-2 transition-all duration-200 active:scale-95 shadow-sm ${lv.bg} ${lv.border}`}
+              onClick={() => onSelectQuiz(lv.id, quizLength)}
+              className={`w-full text-left px-5 py-4 rounded-2xl border-2 transition-all duration-200 active:scale-95 shadow-sm ${lv.bg} ${lv.border}`}
             >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">{lv.emoji}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-2xl flex-shrink-0">{lv.emoji}</span>
                 <div>
-                  <p className={`text-lg font-bold ${lv.color}`}>{lv.label}</p>
-                  <p className="text-sm text-gray-500 mt-0.5">{lv.desc}</p>
+                  <p className={`text-base font-bold ${lv.color}`}>{lv.label}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-snug">{lv.desc}</p>
                 </div>
               </div>
             </button>
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-3 my-4">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs text-gray-400 font-medium tracking-wider">KİŞİSEL ÇALIŞMA</span>
-          <div className="flex-1 h-px bg-gray-200" />
+        {/* Quiz length selector */}
+        <div className="bg-white/70 rounded-2xl px-5 py-3.5 shadow-sm border border-white mb-4">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2.5">
+            Anzahl der Fragen
+          </p>
+          <div className="flex gap-2">
+            {QUIZ_LENGTHS.map((n) => (
+              <button
+                key={n}
+                onClick={() => setQuizLength(n)}
+                className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all duration-150 active:scale-95 ${
+                  quizLength === n
+                    ? "bg-indigo-500 text-white shadow-md"
+                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                }`}
+              >
+                {n} Fragen
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Favorites + Mistakes */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Lernbereich expandable menu */}
+        <div className="mb-4">
           <button
-            onClick={onFavorites}
-            className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border-2 border-amber-200 bg-amber-50 hover:bg-amber-100 hover:border-amber-400 transition-all duration-200 active:scale-95 shadow-sm"
+            onClick={() => setMenuOpen((o) => !o)}
+            className="w-full flex items-center justify-between px-5 py-3.5 rounded-2xl bg-white/70 border border-white shadow-sm hover:bg-white transition-all duration-200 active:scale-95"
           >
-            <span className="text-2xl">⭐</span>
-            <span className="text-sm font-bold text-amber-700">Favorilerim</span>
-            <span className="text-xs text-amber-500 font-medium">
-              {favorites.length} kelime
+            <span className="text-sm font-bold text-indigo-700">📚 Lernbereich</span>
+            <span
+              className={`text-indigo-400 text-lg font-light transition-transform duration-200 ${
+                menuOpen ? "rotate-180" : ""
+              }`}
+            >
+              ⌄
             </span>
           </button>
 
-          <button
-            onClick={onMistakes}
-            className="flex flex-col items-center gap-2 px-4 py-4 rounded-2xl border-2 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:border-rose-400 transition-all duration-200 active:scale-95 shadow-sm"
-          >
-            <span className="text-2xl">❌</span>
-            <span className="text-sm font-bold text-rose-700">Hatalarım</span>
-            <span className="text-xs text-rose-500 font-medium">
-              {mistakes.length} kelime
-            </span>
-          </button>
+          {menuOpen && (
+            <div className="mt-1.5 bg-white rounded-2xl shadow-sm border border-indigo-50 overflow-hidden">
+              <button
+                onClick={onFavorites}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-700 hover:bg-amber-50 transition-colors border-b border-gray-50 active:bg-amber-100"
+              >
+                <span className="text-lg">⭐</span>
+                <span className="flex-1 text-left">Favoriten</span>
+                <span className="text-xs text-gray-400 font-normal">{favorites.length} Wörter</span>
+              </button>
+
+              <button
+                onClick={onMistakes}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-700 hover:bg-rose-50 transition-colors border-b border-gray-50 active:bg-rose-100"
+              >
+                <span className="text-lg">❌</span>
+                <span className="flex-1 text-left">Fehler üben</span>
+                <span className="text-xs text-gray-400 font-normal">{mistakes.length} Wörter</span>
+              </button>
+
+              <button
+                onClick={onNotes}
+                className="w-full flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-700 hover:bg-indigo-50 transition-colors active:bg-indigo-100"
+              >
+                <span className="text-lg">📝</span>
+                <span className="flex-1 text-left">Notizen & eigene Sätze</span>
+                <span className="text-xs text-gray-300">→</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-5">
-          Her soru için 4 şık • 10 soruluk quiz
+        <p className="text-center text-xs text-gray-400">
+          4 Antwortmöglichkeiten pro Frage &bull; Quiz mit {quizLength} Fragen
         </p>
 
         <Footer />

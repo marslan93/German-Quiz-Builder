@@ -112,10 +112,11 @@ export interface QuizProps {
   customPool?: VocabItem[];
   quizTitle?: string;
   quizEmoji?: string;
+  quizLength?: number;
   onBack: () => void;
 }
 
-export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }: QuizProps) {
+export default function Quiz({ level, customPool, quizTitle, quizEmoji, quizLength, onBack }: QuizProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addMistake } = useMistakes();
 
@@ -138,7 +139,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
       setTooFew(true);
       return;
     }
-    const count = Math.min(TOTAL_QUESTIONS, pool.length);
+    const count = Math.min(quizLength ?? TOTAL_QUESTIONS, pool.length);
     const shuffled = shuffle(pool).slice(0, count);
     const qs = shuffled.map((item) => buildQuestion(item, pool));
     setQuestions(qs);
@@ -150,7 +151,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
     setStreak(0);
     setBestStreak(0);
     setTooFew(false);
-  }, [level, customPool]);
+  }, [level, customPool, quizLength]);
 
   useEffect(() => {
     initQuiz();
@@ -246,10 +247,10 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
 
   const getScoreMessage = () => {
     const pct = score / totalQ;
-    if (pct >= 0.9) return "Mükemmel! Harika bir performans!";
-    if (pct >= 0.7) return "Çok iyi! Devam et!";
-    if (pct >= 0.5) return "İyi gidiyorsun!";
-    return "Daha fazla pratik yapabilirsin!";
+    if (pct >= 0.9) return "Ausgezeichnet! Fantastische Leistung!";
+    if (pct >= 0.7) return "Sehr gut! Weiter so!";
+    if (pct >= 0.5) return "Gut gemacht! Du kommst voran!";
+    return "Mehr Übung macht den Meister!";
   };
 
   if (tooFew) {
@@ -257,15 +258,15 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 text-center">
           <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Yeterli Kelime Yok</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Zu wenige Wörter</h2>
           <p className="text-gray-500 mb-6">
-            Quiz başlatmak için en az 4 kelimeye ihtiyaç var. Önce kelime ekleyin.
+            Mindestens 4 Wörter werden für das Quiz benötigt.
           </p>
           <button
             onClick={onBack}
             className="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold shadow-lg hover:shadow-xl transition-all"
           >
-            Geri Dön
+            ← Zurück
           </button>
         </div>
       </div>
@@ -275,7 +276,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
   if (questions.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="text-center text-indigo-400 text-xl font-medium">Yükleniyor...</div>
+        <div className="text-center text-indigo-400 text-xl font-medium">Wird geladen…</div>
       </div>
     );
   }
@@ -289,7 +290,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             <div className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-indigo-50 mb-3 text-indigo-600">
               {displayTitle}
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Bitti!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz beendet!</h2>
             <p className="text-gray-500 mb-6">{getScoreMessage()}</p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -297,17 +298,17 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
                 <p className="text-3xl font-bold text-indigo-600">
                   {score}/{totalQ}
                 </p>
-                <p className="text-sm text-indigo-400 mt-1">Skor</p>
+                <p className="text-sm text-indigo-400 mt-1">Punktzahl</p>
               </div>
               <div className="bg-amber-50 rounded-2xl p-4">
                 <p className="text-3xl font-bold text-amber-600">{bestStreak}</p>
-                <p className="text-sm text-amber-400 mt-1">En Uzun Seri</p>
+                <p className="text-sm text-amber-400 mt-1">Längste Serie</p>
               </div>
             </div>
 
             <div className="mb-8">
               <div className="flex justify-between text-sm text-gray-500 mb-2">
-                <span>Başarı Oranı</span>
+                <span>Erfolgsrate</span>
                 <span>{Math.round((score / totalQ) * 100)}%</span>
               </div>
               <div className="w-full bg-gray-100 rounded-full h-3">
@@ -323,13 +324,13 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
                 onClick={initQuiz}
                 className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
               >
-                Tekrar Oyna
+                Nochmal spielen
               </button>
               <button
                 onClick={onBack}
                 className="w-full py-3 rounded-2xl border-2 border-gray-200 text-gray-600 font-semibold hover:border-gray-300 hover:bg-gray-50 transition-all duration-200 active:scale-95"
               >
-                ← Geri Dön
+                ← Zurück
               </button>
             </div>
           </div>
@@ -365,7 +366,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             onClick={onBack}
             className="text-gray-400 hover:text-gray-600 transition-colors text-sm font-medium px-2 py-1 -ml-2 rounded-xl hover:bg-white/70 active:scale-95"
           >
-            ← Geri
+            ← Zurück
           </button>
 
           <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm border border-white">
@@ -386,10 +387,10 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
         <div>
           <div className="flex justify-between items-center text-xs mb-1.5">
             <span className="text-gray-400 font-medium">
-              Soru {currentIndex + 1} / {totalQ}
+              Frage {currentIndex + 1} / {totalQ}
             </span>
             <span className="text-indigo-500 font-semibold">
-              Skor{" "}
+              Punktzahl{" "}
               <span className="bg-indigo-100 text-indigo-700 rounded-full px-2 py-0.5 ml-0.5">
                 {score}/{totalQ}
               </span>
@@ -463,15 +464,15 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             >
               {answerState === "correct"
                 ? streak >= 3
-                  ? `🔥 ${streak} seri! Harika gidiyorsun!`
-                  : "✓ Doğru! Tebrikler!"
-                : `✗ Yanlış. Doğru cevap: ${current.correct}`}
+                  ? `🔥 ${streak} in Folge! Weiter so!`
+                  : "✓ Richtig! Gut gemacht!"
+                : `✗ Falsch. Richtige Antwort: ${current.correct}`}
             </div>
 
             {/* Example sentence */}
             <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 px-5 py-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-2">
-                Örnek Cümle
+                Beispielsatz
               </p>
               <p className="text-gray-800 font-medium text-sm leading-relaxed">
                 🇩🇪{" "}
@@ -491,7 +492,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
               onClick={handleNext}
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
             >
-              {currentIndex + 1 >= totalQ ? "Sonuçları Gör →" : "Sonraki Soru →"}
+              {currentIndex + 1 >= totalQ ? "Ergebnisse →" : "Nächste Frage →"}
             </button>
           </div>
         )}

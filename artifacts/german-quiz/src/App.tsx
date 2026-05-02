@@ -6,15 +6,17 @@ import LevelSelect from "@/pages/LevelSelect";
 import Quiz from "@/pages/Quiz";
 import Favorites from "@/pages/Favorites";
 import Mistakes from "@/pages/Mistakes";
+import Notes from "@/pages/Notes";
 import { Level, vocabulary } from "@/data/vocabulary";
 
 const queryClient = new QueryClient();
 
 type Screen =
   | { type: "home" }
-  | { type: "quiz"; level: Level }
+  | { type: "quiz"; level: Level; quizLength: number }
   | { type: "favorites" }
   | { type: "mistakes" }
+  | { type: "notes" }
   | { type: "practice-favorites" }
   | { type: "practice-mistakes" };
 
@@ -50,15 +52,24 @@ function AppInner() {
   if (screen.type === "home") {
     return (
       <LevelSelect
-        onSelect={(level) => setScreen({ type: "quiz", level })}
+        onSelectQuiz={(level, quizLength) =>
+          setScreen({ type: "quiz", level, quizLength })
+        }
         onFavorites={() => setScreen({ type: "favorites" })}
         onMistakes={() => setScreen({ type: "mistakes" })}
+        onNotes={() => setScreen({ type: "notes" })}
       />
     );
   }
 
   if (screen.type === "quiz") {
-    return <Quiz level={screen.level} onBack={home} />;
+    return (
+      <Quiz
+        level={screen.level}
+        quizLength={screen.quizLength}
+        onBack={home}
+      />
+    );
   }
 
   if (screen.type === "favorites") {
@@ -79,12 +90,17 @@ function AppInner() {
     );
   }
 
+  if (screen.type === "notes") {
+    return <Notes onBack={home} />;
+  }
+
   if (screen.type === "practice-favorites") {
     return (
       <Quiz
         customPool={getFavPool()}
-        quizTitle="⭐ Favorilerle Quiz"
+        quizTitle="⭐ Favoriten-Quiz"
         quizEmoji="⭐"
+        quizLength={10}
         onBack={() => setScreen({ type: "favorites" })}
       />
     );
@@ -94,8 +110,9 @@ function AppInner() {
     return (
       <Quiz
         customPool={getMistakePool()}
-        quizTitle="❌ Hatalarla Quiz"
+        quizTitle="❌ Fehler-Quiz"
         quizEmoji="❌"
+        quizLength={10}
         onBack={() => setScreen({ type: "mistakes" })}
       />
     );

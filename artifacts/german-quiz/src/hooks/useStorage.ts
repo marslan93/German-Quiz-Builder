@@ -60,3 +60,50 @@ export function useMistakes() {
 
   return { mistakes, addMistake, removeMistake, clearMistakes };
 }
+
+export interface NoteItem {
+  id: string;
+  german: string;
+  translation: string;
+  createdAt: number;
+}
+
+export function useNotes() {
+  const [freeText, setFreeText] = useState<string>(() => {
+    return localStorage.getItem("gq_notes_text") ?? "";
+  });
+
+  const [sentences, setSentences] = useState<NoteItem[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("gq_notes_sentences") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const saveFreeText = useCallback((text: string) => {
+    setFreeText(text);
+    localStorage.setItem("gq_notes_text", text);
+  }, []);
+
+  const addSentence = useCallback((german: string, translation: string) => {
+    setSentences((prev) => {
+      const next: NoteItem[] = [
+        ...prev,
+        { id: Date.now().toString(), german, translation, createdAt: Date.now() },
+      ];
+      localStorage.setItem("gq_notes_sentences", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  const removeSentence = useCallback((id: string) => {
+    setSentences((prev) => {
+      const next = prev.filter((n) => n.id !== id);
+      localStorage.setItem("gq_notes_sentences", JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
+  return { freeText, saveFreeText, sentences, addSentence, removeSentence };
+}
