@@ -210,7 +210,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
 
   const getButtonClass = (option: string): string => {
     const base =
-      "w-full text-left px-5 py-4 rounded-2xl border-2 text-base font-medium transition-all duration-200 focus:outline-none select-none ";
+      "w-full text-left px-5 py-3 rounded-2xl border-2 text-sm font-medium transition-all duration-200 focus:outline-none select-none ";
 
     if (answerState === "idle") {
       return (
@@ -339,7 +339,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex flex-col px-4 py-6 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 flex flex-col px-4 pt-5 pb-6 relative">
 
       {/* Full-screen flash overlay */}
       {flashType && (
@@ -349,74 +349,86 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             flashType === "correct" ? "quiz-flash-correct" : "quiz-flash-wrong"
           }`}
           style={{
-            backgroundColor: flashType === "correct"
-              ? "rgba(52, 211, 153, 0.28)"
-              : "rgba(251, 113, 133, 0.28)",
+            backgroundColor:
+              flashType === "correct"
+                ? "rgba(52, 211, 153, 0.28)"
+                : "rgba(251, 113, 133, 0.28)",
           }}
         />
       )}
 
-      <div className="w-full max-w-md mx-auto flex flex-col flex-1">
+      <div className="w-full max-w-md mx-auto flex flex-col flex-1 gap-3">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-gray-400 hover:text-gray-600 transition-colors text-sm font-medium"
+            className="text-gray-400 hover:text-gray-600 transition-colors text-sm font-medium px-2 py-1 -ml-2 rounded-xl hover:bg-white/70 active:scale-95"
           >
             ← Geri
           </button>
-          <div className="text-sm font-semibold text-indigo-600">
-            {displayEmoji} {level ?? ""}
+
+          <div className="flex items-center gap-1.5 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm border border-white">
+            <span className="text-sm">{displayEmoji}</span>
+            <span className="text-xs font-bold text-indigo-600 tracking-wide">{level ?? ""}</span>
           </div>
+
           <div className="flex items-center gap-2">
             {streak >= 2 && (
-              <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-sm font-semibold">
+              <div className="flex items-center gap-1 bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-bold">
                 🔥 {streak}
               </div>
             )}
-            <div className="bg-white rounded-full px-3 py-1 shadow-sm text-sm font-semibold text-gray-600">
-              {score} <span className="text-gray-300">/</span> {totalQ}
-            </div>
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="mb-5">
-          <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-            <span>Soru {currentIndex + 1} / {totalQ}</span>
-            <span>{current.item.category}</span>
+        {/* ── Progress bar ── */}
+        <div>
+          <div className="flex justify-between items-center text-xs mb-1.5">
+            <span className="text-gray-400 font-medium">
+              Soru {currentIndex + 1} / {totalQ}
+            </span>
+            <span className="text-indigo-500 font-semibold">
+              Skor{" "}
+              <span className="bg-indigo-100 text-indigo-700 rounded-full px-2 py-0.5 ml-0.5">
+                {score}/{totalQ}
+              </span>
+            </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200/70 rounded-full h-1.5">
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 transition-all duration-500"
+              className="h-1.5 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        {/* Word card */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-5 text-center flex-shrink-0 relative">
-          {/* Star button */}
+        {/* ── Word card ── */}
+        <div className="bg-white rounded-3xl shadow-md px-6 py-7 text-center flex-shrink-0 relative">
           <button
             onClick={handleStar}
             title={starred ? "Favorilerden çıkar" : "Favorilere ekle"}
-            className={`absolute top-4 right-4 text-2xl transition-all duration-200 active:scale-110 ${
+            className={`absolute top-4 right-4 text-xl transition-all duration-200 active:scale-125 ${
               starred ? "text-yellow-400" : "text-gray-200 hover:text-yellow-300"
             }`}
           >
             ★
           </button>
 
-          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-3">Almanca</p>
-          <h1 className="text-5xl font-bold text-gray-900 tracking-tight leading-tight break-words">
+          <h1
+            className="font-extrabold text-gray-900 tracking-tight leading-tight"
+            style={{
+              fontSize: "clamp(1.65rem, 6.5vw, 2.8rem)",
+              wordBreak: "break-word",
+              hyphens: "auto",
+            }}
+          >
             {current.item.german}
           </h1>
-          <p className="text-sm text-gray-400 mt-3">Türkçe karşılığı nedir?</p>
         </div>
 
-        {/* Options */}
-        <div className="flex flex-col gap-3 mb-4">
+        {/* ── Answer options ── */}
+        <div className="flex flex-col gap-2">
           {current.options.map((option) => (
             <button
               key={option}
@@ -425,20 +437,22 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             >
               <span className="flex items-center gap-3">
                 {answerState !== "idle" && option === current.correct && (
-                  <span className="text-emerald-500 font-bold text-lg leading-none">✓</span>
+                  <span className="text-emerald-500 font-bold text-base leading-none">✓</span>
                 )}
-                {answerState === "wrong" && option === selected && option !== current.correct && (
-                  <span className="text-rose-500 font-bold text-lg leading-none">✗</span>
-                )}
+                {answerState === "wrong" &&
+                  option === selected &&
+                  option !== current.correct && (
+                    <span className="text-rose-500 font-bold text-base leading-none">✗</span>
+                  )}
                 {option}
               </span>
             </button>
           ))}
         </div>
 
-        {/* Feedback + example sentence + next button */}
+        {/* ── Feedback + example + next button ── */}
         {answerState !== "idle" && (
-          <div className="mt-auto flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {/* Result banner */}
             <div
               className={`rounded-2xl px-5 py-3 text-center font-semibold text-sm ${
@@ -456,7 +470,9 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
 
             {/* Example sentence */}
             <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-2">Örnek Cümle</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-2">
+                Örnek Cümle
+              </p>
               <p className="text-gray-800 font-medium text-sm leading-relaxed">
                 🇩🇪{" "}
                 <HighlightedSentence
@@ -473,7 +489,7 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             {/* Next button */}
             <button
               onClick={handleNext}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base shadow-lg hover:shadow-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 active:scale-95"
             >
               {currentIndex + 1 >= totalQ ? "Sonuçları Gör →" : "Sonraki Soru →"}
             </button>

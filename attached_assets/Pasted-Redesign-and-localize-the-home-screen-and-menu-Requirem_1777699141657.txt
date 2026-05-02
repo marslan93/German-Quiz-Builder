@@ -1,0 +1,61 @@
+Redesign and localize the home screen and menu.
+
+Requirements:
+
+1. Remove the "KİŞİSEL ÇALIŞMA" section from the main home screen.
+   - Do not show "Favorilerim" and "Hatalarım" on the main screen anymore.
+   - Move Favorites and Mistakes into a new expandable menu.
+
+2. Add a menu button on the home screen.
+   - The menu title should be: "Lernbereich"
+   - Inside the menu add:
+     - "Favoriten"
+     - "Fehler üben"
+     - "Notizen & eigene Sätze"
+
+3. Add a new study area inside this menu:
+   - Title: "Notizen & eigene Sätze"
+   - User can write notes.
+   - User can write their own German example sentences.
+   - Save the notes locally so they remain after refresh.
+   - Keep the design mobile-friendly.
+
+4. Translate all visible UI text into German.
+   Examples:
+   - "Kişisel Çalışma" → "Lernbereich"
+   - "Favorilerim" → "Favoriten"
+   - "Hatalarım" → "Fehler üben"
+   - "Her soru için 4 şık" → "4 Antwortmöglichkeiten pro Frage"
+   - "10 soruluk quiz" → "Quiz mit 10 Fragen"
+   - "Geri" → "Zurück"
+   - "Skor" → "Punktzahl"
+   - "Doğru" → "Richtig"
+   - "Yanlış" → "Falsch"
+   - "Sonraki soru" → "Nächste Frage"
+
+5. Improve the home screen layout:
+   - Make spacing more balanced.
+   - Make the level cards proportional and aligned.
+   - Make the page feel clean, modern and professional.
+   - Reduce unnecessary empty space.
+   - Keep everything responsive for mobile screens.
+
+6. Add quiz length selection before starting a quiz:
+   - 5 Fragen
+   - 10 Fragen
+   - 15 Fragen
+   The user should select the number of questions before the quiz starts.
+
+7. The selected quiz length must control the quiz.
+   - If user selects 5 Fragen, quiz ends after 5 questions.
+   - If user selects 10 Fragen, quiz ends after 10 questions.
+   - If user selects 15 Fragen, quiz ends after 15 questions.
+
+8. Keep all existing functions:
+   - A1, A2, B1, B2 levels
+   - favorites
+   - mistakes
+   - score system
+   - correct/wrong screen flash animation
+   - example sentence after answer
+   - highlighted target word in green/red
