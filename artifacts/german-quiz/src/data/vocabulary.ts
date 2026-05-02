@@ -1,4 +1,4 @@
-export type Level = "A1" | "A2" | "B1";
+export type Level = "A1" | "A2" | "B1" | "B2";
 
 export interface VocabItem {
   german: string;
@@ -312,4 +312,101 @@ export const vocabulary: VocabItem[] = [
   { german: "sich verlieben", turkish: "Aşık olmak", category: "Fiiller", level: "B1", exampleDe: "Ich habe mich verliebt.", exampleTr: "Aşık oldum." },
   { german: "sich verändern", turkish: "Değişmek", category: "Fiiller", level: "B1", exampleDe: "Du hast dich gar nicht verändert.", exampleTr: "Hiç değişmemişsin." },
   { german: "verschieben", turkish: "Ertelemek", category: "Fiiller", level: "B1", exampleDe: "Leider muss ich den Termin verschieben.", exampleTr: "Maalesef randevuyu ertelemem gerekiyor." },
+
+  // ─────────────────────────────────────────────────────────────
+  // B2  (Einfach besser! 500 – Berufssprachkurs B2)
+  // ─────────────────────────────────────────────────────────────
+
+  // İş Dünyası – Nomen
+  { german: "der Arbeitgeber", turkish: "İşveren", category: "İş Dünyası", level: "B2", exampleDe: "Der Arbeitgeber muss seine Mitarbeiter fair behandeln.", exampleTr: "İşveren çalışanlarına adil davranmak zorundadır." },
+  { german: "die Branche", turkish: "Sektör / Dal", category: "İş Dünyası", level: "B2", exampleDe: "In welcher Branche möchten Sie arbeiten?", exampleTr: "Hangi sektörde çalışmak istersiniz?" },
+  { german: "der Betrieb", turkish: "İşletme / Şirket", category: "İş Dünyası", level: "B2", exampleDe: "Der Betrieb hat über 50 Mitarbeiter.", exampleTr: "İşletmenin 50'den fazla çalışanı var." },
+  { german: "die Beratung", turkish: "Danışmanlık", category: "İş Dünyası", level: "B2", exampleDe: "Die Beratung durch einen Experten dauert etwa eine Stunde.", exampleTr: "Bir uzman tarafından verilen danışmanlık yaklaşık bir saat sürer." },
+  { german: "das Gehalt", turkish: "Maaş", category: "İş Dünyası", level: "B2", exampleDe: "Das Gehalt wird am Monatsende überwiesen.", exampleTr: "Maaş ayın sonunda havale edilir." },
+  { german: "die Probezeit", turkish: "Deneme süresi", category: "İş Dünyası", level: "B2", exampleDe: "Die Probezeit dauert sechs Monate.", exampleTr: "Deneme süresi altı ay sürer." },
+  { german: "die Überstunde", turkish: "Fazla mesai", category: "İş Dünyası", level: "B2", exampleDe: "Ich mache diese Woche viele Überstunden.", exampleTr: "Bu hafta çok fazla mesai yapıyorum." },
+  { german: "der Verdienst", turkish: "Kazanç / Gelir", category: "İş Dünyası", level: "B2", exampleDe: "Der Verdienst in diesem Beruf ist überdurchschnittlich gut.", exampleTr: "Bu meslekteki kazanç ortalamanın üzerinde." },
+  { german: "die Vergütung", turkish: "Ücret / Ödeme", category: "İş Dünyası", level: "B2", exampleDe: "Die Vergütung wird monatlich ausgezahlt.", exampleTr: "Ücret aylık olarak ödenir." },
+  { german: "die Teilzeit", turkish: "Yarı zamanlı çalışma", category: "İş Dünyası", level: "B2", exampleDe: "Sie arbeitet in Teilzeit, zwanzig Stunden pro Woche.", exampleTr: "Haftada 20 saat yarı zamanlı çalışıyor." },
+  { german: "die Vollzeit", turkish: "Tam zamanlı çalışma", category: "İş Dünyası", level: "B2", exampleDe: "Er möchte wieder in Vollzeit arbeiten.", exampleTr: "Yeniden tam zamanlı çalışmak istiyor." },
+  { german: "die Konkurrenz", turkish: "Rekabet / Rakip", category: "İş Dünyası", level: "B2", exampleDe: "Die Konkurrenz in dieser Branche ist sehr groß.", exampleTr: "Bu sektördeki rekabet çok büyük." },
+
+  // Kariyer & Başvuru
+  { german: "die Bewerbung", turkish: "İş başvurusu", category: "Kariyer", level: "B2", exampleDe: "Ich schicke meine Bewerbung per E-Mail.", exampleTr: "Başvurumu e-posta ile gönderiyorum." },
+  { german: "das Bewerbungsschreiben", turkish: "Başvuru mektubu / Ön yazı", category: "Kariyer", level: "B2", exampleDe: "Ein gutes Bewerbungsschreiben ist sehr wichtig.", exampleTr: "İyi bir başvuru mektubu çok önemlidir." },
+  { german: "der Lebenslauf", turkish: "Özgeçmiş", category: "Kariyer", level: "B2", exampleDe: "Bitte senden Sie uns Ihren Lebenslauf.", exampleTr: "Lütfen bize özgeçmişinizi gönderin." },
+  { german: "das Vorstellungsgespräch", turkish: "İş görüşmesi", category: "Kariyer", level: "B2", exampleDe: "Das Vorstellungsgespräch war sehr erfolgreich.", exampleTr: "İş görüşmesi çok başarılıydı." },
+  { german: "die Berufserfahrung", turkish: "İş deneyimi / Tecrübe", category: "Kariyer", level: "B2", exampleDe: "Sie hat fünf Jahre Berufserfahrung im Vertrieb.", exampleTr: "Satış alanında beş yıl iş deneyimi var." },
+  { german: "die Stellenanzeige", turkish: "İş ilanı", category: "Kariyer", level: "B2", exampleDe: "Ich habe die Stellenanzeige online gefunden.", exampleTr: "İş ilanını çevrimiçi buldum." },
+  { german: "die Qualifikation", turkish: "Yeterlilik / Nitelik", category: "Kariyer", level: "B2", exampleDe: "Ihre Qualifikation passt sehr gut zu dieser Stelle.", exampleTr: "Yeterliliğiniz bu pozisyona çok uygun." },
+  { german: "die Anforderung", turkish: "Gereklilik / Şart", category: "Kariyer", level: "B2", exampleDe: "Die Anforderungen für diese Stelle sind sehr hoch.", exampleTr: "Bu pozisyonun şartları çok yüksek." },
+  { german: "das Praktikum", turkish: "Staj", category: "Kariyer", level: "B2", exampleDe: "Ich mache ein Praktikum in einer Anwaltskanzlei.", exampleTr: "Bir hukuk bürosunda staj yapıyorum." },
+  { german: "die Herausforderung", turkish: "Zorluk / Meydan okuma", category: "Kariyer", level: "B2", exampleDe: "Diese neue Stelle ist eine echte Herausforderung.", exampleTr: "Bu yeni pozisyon gerçek bir zorluk." },
+  { german: "die Gehaltsvorstellung", turkish: "Maaş beklentisi", category: "Kariyer", level: "B2", exampleDe: "Was sind Ihre Gehaltsvorstellungen?", exampleTr: "Maaş beklentiniz nedir?" },
+  { german: "das Ehrenamt", turkish: "Gönüllü çalışma / Fahri görev", category: "Kariyer", level: "B2", exampleDe: "Ein Ehrenamt zeigt soziales Engagement.", exampleTr: "Gönüllü çalışma sosyal sorumluluk gösterir." },
+  { german: "die Förderung", turkish: "Destek / Finansman", category: "Kariyer", level: "B2", exampleDe: "Ich beantrage eine Förderung für die Weiterbildung.", exampleTr: "Mesleki gelişim için destek başvurusunda bulunuyorum." },
+
+  // Eğitim & Gelişim
+  { german: "die Ausbildung", turkish: "Mesleki eğitim", category: "Eğitim", level: "B2", exampleDe: "Eine duale Ausbildung dauert zwei bis drei Jahre.", exampleTr: "İkili mesleki eğitim iki ila üç yıl sürer." },
+  { german: "die Weiterbildung", turkish: "Mesleki gelişim eğitimi", category: "Eğitim", level: "B2", exampleDe: "Weiterbildung ist wichtig für die Karriere.", exampleTr: "Mesleki gelişim eğitimi kariyer için önemlidir." },
+  { german: "die Fortbildung", turkish: "Hizmet içi eğitim", category: "Eğitim", level: "B2", exampleDe: "Mein Chef schickt mich zu einer Fortbildung.", exampleTr: "Müdürüm beni hizmet içi eğitime gönderiyor." },
+  { german: "das Abitur", turkish: "Lise diploması (Almanya)", category: "Eğitim", level: "B2", exampleDe: "Das Abitur ist der Abschluss am Ende des Gymnasiums.", exampleTr: "Abitur, lise sonundaki diploma sınavıdır." },
+  { german: "die Berufsausbildung", turkish: "Mesleki eğitim / Çıraklık eğitimi", category: "Eğitim", level: "B2", exampleDe: "Nach der Berufsausbildung kann man sofort arbeiten.", exampleTr: "Mesleki eğitimden sonra hemen çalışmaya başlanabilir." },
+
+  // İş Hukuku
+  { german: "der Arbeitsvertrag", turkish: "İş sözleşmesi", category: "İş Hukuku", level: "B2", exampleDe: "Ich habe den Arbeitsvertrag sorgfältig gelesen.", exampleTr: "İş sözleşmesini dikkatle okudum." },
+  { german: "die Kündigungsfrist", turkish: "İhbar süresi", category: "İş Hukuku", level: "B2", exampleDe: "Die Kündigungsfrist beträgt drei Monate.", exampleTr: "İhbar süresi üç aydır." },
+  { german: "die Krankmeldung", turkish: "Hastalık bildirimi", category: "İş Hukuku", level: "B2", exampleDe: "Bitte schicken Sie die Krankmeldung per E-Mail.", exampleTr: "Lütfen hastalık bildirimini e-posta ile gönderin." },
+  { german: "das Arbeitsverhältnis", turkish: "İstihdam ilişkisi", category: "İş Hukuku", level: "B2", exampleDe: "Das Arbeitsverhältnis beginnt am ersten Oktober.", exampleTr: "İstihdam ilişkisi birinci Ekim'de başlıyor." },
+  { german: "das Betriebsgeheimnis", turkish: "Ticari sır / İş sırrı", category: "İş Hukuku", level: "B2", exampleDe: "Mitarbeiter müssen das Betriebsgeheimnis wahren.", exampleTr: "Çalışanlar ticari sırrı korumak zorundadır." },
+
+  // Belgeler
+  { german: "das Zeugnis", turkish: "Diploma / Referans belgesi", category: "Belgeler", level: "B2", exampleDe: "Bitte reichen Sie Ihre Zeugnisse ein.", exampleTr: "Lütfen diplomalarınızı teslim edin." },
+  { german: "der Antrag", turkish: "Başvuru formu / Dilekçe", category: "Belgeler", level: "B2", exampleDe: "Ich habe den Antrag vollständig ausgefüllt.", exampleTr: "Başvuru formunu eksiksiz doldurdum." },
+  { german: "die Anerkennung", turkish: "Tanınma / Onay", category: "Belgeler", level: "B2", exampleDe: "Die Anerkennung des Abschlusses dauert mehrere Monate.", exampleTr: "Diplomanın tanınması birkaç ay sürer." },
+  { german: "die Unterlagen", turkish: "Belgeler / Evraklar", category: "Belgeler", level: "B2", exampleDe: "Bitte senden Sie alle Unterlagen vollständig ein.", exampleTr: "Lütfen tüm belgeleri eksiksiz gönderin." },
+
+  // İş Hayatı
+  { german: "die Personalabteilung", turkish: "İnsan kaynakları", category: "İş Hayatı", level: "B2", exampleDe: "Bitte wenden Sie sich an die Personalabteilung.", exampleTr: "Lütfen insan kaynakları departmanına başvurun." },
+  { german: "die Geschäftsleitung", turkish: "Yönetim / Müdüriyet", category: "İş Hayatı", level: "B2", exampleDe: "Die Geschäftsleitung hat neue Regeln eingeführt.", exampleTr: "Yönetim yeni kurallar getirdi." },
+  { german: "die Besprechung", turkish: "Toplantı", category: "İş Hayatı", level: "B2", exampleDe: "Die Besprechung beginnt pünktlich um neun Uhr.", exampleTr: "Toplantı tam olarak saat 9'da başlıyor." },
+  { german: "der Vorgesetzte", turkish: "Amir / Üst", category: "İş Hayatı", level: "B2", exampleDe: "Mein Vorgesetzter ist sehr fair und freundlich.", exampleTr: "Amirim çok adil ve kibar." },
+  { german: "die Kantine", turkish: "Yemekhane / Kantin", category: "İş Hayatı", level: "B2", exampleDe: "Wir essen jeden Tag gemeinsam in der Kantine.", exampleTr: "Her gün birlikte kantinde yiyoruz." },
+  { german: "der Einsatzplan", turkish: "Vardiya planı / Görev çizelgesi", category: "İş Hayatı", level: "B2", exampleDe: "Der Einsatzplan hängt im Büro aus.", exampleTr: "Görev çizelgesi ofiste asılı." },
+  { german: "die Anweisung", turkish: "Talimat / Yönerge", category: "İş Hayatı", level: "B2", exampleDe: "Bitte folgen Sie den Anweisungen genau.", exampleTr: "Lütfen talimatlara tam olarak uyun." },
+
+  // Sektörler
+  { german: "die Gastronomie", turkish: "Gastronomi / Yiyecek-içecek", category: "Sektörler", level: "B2", exampleDe: "Er hat lange in der Gastronomie gearbeitet.", exampleTr: "Gastronomi sektöründe uzun süre çalıştı." },
+  { german: "der Großhandel", turkish: "Toptan ticaret", category: "Sektörler", level: "B2", exampleDe: "Wir kaufen unsere Waren im Großhandel ein.", exampleTr: "Mallarımızı toptan satın alıyoruz." },
+  { german: "der Einzelhandel", turkish: "Perakende ticaret", category: "Sektörler", level: "B2", exampleDe: "Sie arbeitet seit Jahren im Einzelhandel.", exampleTr: "Yıllardır perakende sektöründe çalışıyor." },
+  { german: "der Maschinenbau", turkish: "Makine mühendisliği", category: "Sektörler", level: "B2", exampleDe: "Er hat Maschinenbau an der Universität studiert.", exampleTr: "Üniversitede makine mühendisliği okudu." },
+  { german: "die Pharmaindustrie", turkish: "İlaç sektörü", category: "Sektörler", level: "B2", exampleDe: "Die Pharmaindustrie investiert viel in Forschung.", exampleTr: "İlaç sektörü araştırmaya çok yatırım yapıyor." },
+  { german: "die IT-Branche", turkish: "BT sektörü / Bilişim", category: "Sektörler", level: "B2", exampleDe: "Die IT-Branche wächst sehr schnell.", exampleTr: "BT sektörü çok hızlı büyüyor." },
+
+  // Kişisel Özellikler – Sıfatlar
+  { german: "die Stärke", turkish: "Güçlü yön", category: "Kişisel Özellikler", level: "B2", exampleDe: "Was sind Ihre besonderen Stärken?", exampleTr: "Özel güçlü yönleriniz nelerdir?" },
+  { german: "die Schwäche", turkish: "Zayıf yön", category: "Kişisel Özellikler", level: "B2", exampleDe: "Bitte nennen Sie eine Schwäche von sich.", exampleTr: "Lütfen bir zayıf yönünüzü belirtin." },
+  { german: "belastbar", turkish: "Baskıya dayanıklı", category: "Kişisel Özellikler", level: "B2", exampleDe: "Sie ist belastbar und arbeitet auch unter Druck gut.", exampleTr: "Baskıya dayanıklı ve stres altında iyi çalışıyor." },
+  { german: "teamfähig", turkish: "Takım çalışmasına uygun", category: "Kişisel Özellikler", level: "B2", exampleDe: "Wir suchen jemanden, der teamfähig und flexibel ist.", exampleTr: "Takım çalışmasına uygun ve esnek birini arıyoruz." },
+  { german: "selbstbewusst", turkish: "Özgüvenli", category: "Kişisel Özellikler", level: "B2", exampleDe: "Sie tritt in Gesprächen sehr selbstbewusst auf.", exampleTr: "Görüşmelerde çok özgüvenli davranıyor." },
+  { german: "verantwortungsbewusst", turkish: "Sorumluluk sahibi", category: "Kişisel Özellikler", level: "B2", exampleDe: "Er ist verantwortungsbewusst und immer pünktlich.", exampleTr: "Sorumluluk sahibi ve her zaman dakik." },
+  { german: "zuverlässig", turkish: "Güvenilir", category: "Kişisel Özellikler", level: "B2", exampleDe: "Eine zuverlässige Mitarbeiterin ist sehr wertvoll.", exampleTr: "Güvenilir bir çalışan çok değerlidir." },
+  { german: "gewissenhaft", turkish: "Özenli / Vicdanlı", category: "Kişisel Özellikler", level: "B2", exampleDe: "Er erledigt alle Aufgaben gewissenhaft.", exampleTr: "Tüm görevleri özenle yerine getirir." },
+  { german: "hilfsbereit", turkish: "Yardımsever", category: "Kişisel Özellikler", level: "B2", exampleDe: "Sie ist immer hilfsbereit und freundlich.", exampleTr: "Her zaman yardımsever ve kibar." },
+  { german: "eigeninitiativ", turkish: "İnisiyatif kullanan", category: "Kişisel Özellikler", level: "B2", exampleDe: "Wir brauchen einen eigeninitiativ handelnden Mitarbeiter.", exampleTr: "İnisiyatif kullanan bir çalışana ihtiyacımız var." },
+  { german: "lernbereit", turkish: "Öğrenmeye istekli", category: "Kişisel Özellikler", level: "B2", exampleDe: "Sie ist lernbereit und motiviert.", exampleTr: "Öğrenmeye istekli ve motive." },
+  { german: "reibungslos", turkish: "Sorunsuz / Akıcı", category: "İş Hayatı", level: "B2", exampleDe: "Die Zusammenarbeit läuft reibungslos.", exampleTr: "İşbirliği sorunsuz yürüyor." },
+  { german: "angemessen", turkish: "Uygun / Yerinde", category: "İş Hayatı", level: "B2", exampleDe: "Das Gehalt ist für diese Position angemessen.", exampleTr: "Bu pozisyon için maaş uygun." },
+
+  // Fiiller
+  { german: "sich bewerben", turkish: "Başvurmak", category: "Kariyer", level: "B2", exampleDe: "Ich möchte mich um diese Stelle bewerben.", exampleTr: "Bu pozisyona başvurmak istiyorum." },
+  { german: "beschäftigen", turkish: "İstihdam etmek / Çalıştırmak", category: "İş Dünyası", level: "B2", exampleDe: "Die Deutsche Bahn beschäftigt viele Mitarbeiter.", exampleTr: "Alman Demiryolları çok sayıda çalışan istihdam ediyor." },
+  { german: "absolvieren", turkish: "Tamamlamak / Bitirmek", category: "Eğitim", level: "B2", exampleDe: "Er hat die Ausbildung erfolgreich absolviert.", exampleTr: "Mesleki eğitimi başarıyla tamamladı." },
+  { german: "verfassen", turkish: "Yazmak / Kaleme almak", category: "Kariyer", level: "B2", exampleDe: "Sie hat ein überzeugendes Bewerbungsschreiben verfasst.", exampleTr: "İkna edici bir başvuru mektubu yazdı." },
+  { german: "beantragen", turkish: "Başvurmak / Talep etmek", category: "Belgeler", level: "B2", exampleDe: "Er will finanzielle Unterstützung beantragen.", exampleTr: "Mali destek talep etmek istiyor." },
+  { german: "duzen", turkish: "Birbirine 'sen' demek", category: "İş Hayatı", level: "B2", exampleDe: "Alle Mitarbeiter in der Firma duzen sich.", exampleTr: "Firmadaki tüm çalışanlar birbirine 'sen' der." },
+  { german: "ausüben", turkish: "İcra etmek / Uygulamak", category: "İş Dünyası", level: "B2", exampleDe: "Er übt seinen Beruf mit großer Leidenschaft aus.", exampleTr: "Mesleğini büyük bir tutkuyla icra ediyor." },
+  { german: "sich erkundigen", turkish: "Bilgi almak / Sormak", category: "İletişim", level: "B2", exampleDe: "Ich erkundige mich nach dem Stand der Dinge.", exampleTr: "Durumun son hali hakkında bilgi alıyorum." },
+  { german: "beeindrucken", turkish: "Etkilemek / İz bırakmak", category: "Kariyer", level: "B2", exampleDe: "Ihre Präsentation hat alle beeindruckt.", exampleTr: "Sunumu herkesi etkiledi." },
+  { german: "spezialisieren", turkish: "Uzmanlaşmak", category: "Kariyer", level: "B2", exampleDe: "Er hat sich auf Arbeitsrecht spezialisiert.", exampleTr: "İş hukuku üzerine uzmanlaştı." },
 ];

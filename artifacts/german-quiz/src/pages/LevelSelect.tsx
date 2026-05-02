@@ -45,6 +45,15 @@ const levels: {
     bg: "bg-purple-50 hover:bg-purple-100",
     border: "border-purple-200 hover:border-purple-400",
   },
+  {
+    id: "B2",
+    emoji: "🏢",
+    label: "B2 – Berufssprache",
+    desc: "Beruf, Bewerbung, Arbeitsplatz, Kommunikation und Geschäftsdeutsch.",
+    color: "text-orange-700",
+    bg: "bg-orange-50 hover:bg-orange-100",
+    border: "border-orange-200 hover:border-orange-400",
+  },
 ];
 
 export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props) {
@@ -64,10 +73,10 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
             Deutsch Wortschatz Trainer
           </h1>
           <p className="text-sm font-semibold text-indigo-400 mt-1 tracking-widest uppercase">
-            A1–B1 &bull; DTZ
+            A1–B2 &bull; DTZ
           </p>
           <p className="text-gray-400 text-xs mt-2">
-            Learn German vocabulary for DTZ and B1 exams
+            Learn German vocabulary for DTZ and B1/B2 exams
           </p>
         </div>
 
@@ -126,7 +135,6 @@ export default function LevelSelect({ onSelect, onFavorites, onMistakes }: Props
           Her soru için 4 şık • 10 soruluk quiz
         </p>
 
-        {/* Footer */}
         <Footer />
       </div>
     </div>

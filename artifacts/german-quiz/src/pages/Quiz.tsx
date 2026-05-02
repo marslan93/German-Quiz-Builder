@@ -38,7 +38,74 @@ const LEVEL_META: Record<Level, { emoji: string; label: string; color: string }>
   A1: { emoji: "🌱", label: "A1 – Başlangıç", color: "text-emerald-600" },
   A2: { emoji: "🌿", label: "A2 – Temel", color: "text-blue-600" },
   B1: { emoji: "🌳", label: "B1 – Orta", color: "text-purple-600" },
+  B2: { emoji: "🏢", label: "B2 – Berufssprache", color: "text-orange-600" },
 };
+
+/**
+ * Extracts the base keyword to highlight from a German vocabulary entry.
+ * – Strips articles (der/die/das …)
+ * – Strips reflexive "sich "
+ * – Strips "/-in" gender suffixes
+ * – Takes the first word of what remains
+ * – For verb infinitives (lowercase start, ending in -en, length > 4)
+ *   strips the "-en" to produce a conjugation stem that matches inflected forms
+ */
+function getHighlightKeyword(german: string): string {
+  let kw = german
+    .replace(/^(der|die|das|den|dem|des|einem|einer|ein)\s+/i, "")
+    .replace(/^sich\s+/i, "")
+    .replace(/\/.*$/, "")
+    .trim()
+    .split(/\s+/)[0];
+
+  // Verb infinitive stem: strip "-en" so "beschäftigen" → "beschäftig"
+  // matches conjugated forms like "beschäftigt", "beschäftigte", etc.
+  if (
+    kw.length > 4 &&
+    kw[0] === kw[0].toLowerCase() &&
+    /[a-zäöüß]en$/.test(kw)
+  ) {
+    kw = kw.slice(0, -2);
+  }
+
+  return kw;
+}
+
+/** Renders a sentence with the target German word highlighted in green or red. */
+function HighlightedSentence({
+  sentence,
+  german,
+  isCorrect,
+}: {
+  sentence: string;
+  german: string;
+  isCorrect: boolean;
+}) {
+  const keyword = getHighlightKeyword(german);
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Split on the keyword + any following word characters (handles plurals, conjugations)
+  const splitRegex = new RegExp(`(${escaped}\\w*)`, "gi");
+  const matchRegex = new RegExp(`^${escaped}\\w*$`, "i");
+  const parts = sentence.split(splitRegex);
+
+  const hlClass = isCorrect
+    ? "text-emerald-600 font-bold bg-emerald-50 rounded px-0.5"
+    : "text-rose-600 font-bold bg-rose-50 rounded px-0.5";
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        matchRegex.test(part) ? (
+          <span key={i} className={hlClass}>
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
 
 export interface QuizProps {
   level?: Level;
@@ -391,7 +458,12 @@ export default function Quiz({ level, customPool, quizTitle, quizEmoji, onBack }
             <div className="bg-white rounded-2xl shadow-sm border border-indigo-100 px-5 py-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-2">Örnek Cümle</p>
               <p className="text-gray-800 font-medium text-sm leading-relaxed">
-                🇩🇪 {current.item.exampleDe}
+                🇩🇪{" "}
+                <HighlightedSentence
+                  sentence={current.item.exampleDe}
+                  german={current.item.german}
+                  isCorrect={answerState === "correct"}
+                />
               </p>
               <p className="text-gray-500 text-sm leading-relaxed mt-1">
                 🇹🇷 {current.item.exampleTr}
