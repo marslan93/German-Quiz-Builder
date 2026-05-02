@@ -1,4 +1,4 @@
-# 🇩🇪 Deutsch Wortschatz Trainer (A1–B1 | DTZ)
+# 🇩🇪 Deutsch Wortschatz Trainer (A1–B2 | DTZ / DTB)
 
 An interactive German vocabulary trainer designed for learners preparing for DTZ and Goethe A1–B1 exams.
 
