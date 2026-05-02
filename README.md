@@ -6,7 +6,7 @@ An interactive German vocabulary trainer designed for learners preparing for DTZ
 https://replit.com/@marslan93/German-Quiz-Builder
 
 ## 🚀 Features
-- A1–A2–B1 levels
+- A1–A2–B1-B2 levels
 - Quiz-based learning
 - Instant feedback (correct / wrong)
 - Mobile-friendly UI
